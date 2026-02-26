@@ -1,28 +1,32 @@
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch"
+import { useState, useRef } from "react";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import MenuBar from "./MenuBar";
-import Window from "./Window";
+import DesktopCanvas from "./DesktopCanvas";
 
-export default function Desktop({ windows, openWindow, closeWindow }) {
-return (
+export default function Desktop({ windows, openWindow, closeWindow, moveWindow }) {
+  const [icons, setIcons] = useState([
+    { id: "computer", name: "computer", title: "my computer", x: 200, y: 150 },
+  ]);
+  const scaleRef = useRef(1);
+
+  return (
     <div style={styles.desktop}>
       <MenuBar openWindow={openWindow} />
-
       <TransformWrapper
-        panning={{ velocityDisabled: true }}
+        panning={{ excluded: ["icon"] }}
         wheel={{ disabled: true }}
+        onTransformed={(_, state) => { scaleRef.current = state.scale; }}
       >
         <TransformComponent>
           <div style={styles.canvas}>
-            {windows.map((win) => (
-              <Window
-                key={win.id}
-                id={win.id}
-                type={win.type}
-                x={win.x}
-                y={win.y}
-                closeWindow={closeWindow}
-              />
-            ))}
+            <DesktopCanvas
+              icons={icons}
+              setIcons={setIcons}
+              windows={windows}
+              moveWindow={moveWindow}
+              closeWindow={closeWindow}
+              scale={scaleRef}
+            />
           </div>
         </TransformComponent>
       </TransformWrapper>
@@ -31,17 +35,17 @@ return (
 }
 
 const styles = {
-desktop: {
-  width: "100%",
-  height: "calc(100vh - 32px)",
-  overflow: "hidden",
-  position: "relative",
-},
+  desktop: {
+    width: "100%",
+    height: "calc(100vh - 32px)",
+    overflow: "hidden",
+    position: "relative",
+  },
 
-canvas: {
-  width: "calc(100vw - 32px)",
-  height: "calc(100vh - 32px)",
-  marginTop: "32px",
-  overflow: "hidden",
-}
+  canvas: {
+    width: "calc(100vw - 32px)",
+    height: "calc(100vh - 32px)",
+    marginTop: "32px",
+    overflow: "hidden",
+  },
 };

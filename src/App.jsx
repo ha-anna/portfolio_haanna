@@ -1,20 +1,27 @@
 import { useState } from "react";
-import Desktop from "./components/Desktop"
+import Desktop from "./components/Desktop";
 
 function App() {
   const [windows, setWindows] = useState([]);
 
-  const openWindow = (type) => {
-    setWindows((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        type,
-        x: 200,
-        y: 150,
-      },
-    ]);
-  };
+  function openWindow(type) {
+    const newWindow = {
+      id: crypto.randomUUID(),
+      type,
+      x: 200,
+      y: 150,
+    };
+
+    setWindows((prev) => [...prev, newWindow]);
+  }
+
+  function moveWindow(id, dx, dy) {
+    setWindows((prev) =>
+      prev.map((win) =>
+        win.id === id ? { ...win, x: win.x + dx, y: win.y + dy } : win,
+      ),
+    );
+  }
 
   const closeWindow = (id) => {
     setWindows((prev) => prev.filter((w) => w.id !== id));
@@ -23,10 +30,11 @@ function App() {
   return (
     <Desktop
       windows={windows}
+      moveWindow={moveWindow}
       openWindow={openWindow}
       closeWindow={closeWindow}
     />
   );
 }
 
-export default App
+export default App;
