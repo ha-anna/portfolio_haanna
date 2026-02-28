@@ -7,6 +7,8 @@ export default function Desktop({ windows, openWindow, closeWindow, moveWindow }
   const [icons, setIcons] = useState([
     { id: "computer", name: "computer", title: "my computer", x: 20, y: 20 },
     { id: "cv", name: "CV", title: "my cv", x: 40, y: 120 },
+    { id: "folder", name: "Folder", title: "cats", x: 40, y: 220 },
+    { id: "coding", name: "Coding Projects", title: "my projects", x: 20, y: 320 },
   ]);
   const scaleRef = useRef(1);
 
@@ -16,6 +18,7 @@ export default function Desktop({ windows, openWindow, closeWindow, moveWindow }
       <TransformWrapper
         panning={{ excluded: ["icon"] }}
         wheel={{ disabled: true }}
+        doubleClick={{ disabled: true }}
         onTransformed={(_, state) => { scaleRef.current = state.scale; }}
       >
         <TransformComponent>
